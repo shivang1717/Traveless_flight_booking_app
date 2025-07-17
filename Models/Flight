@@ -1,0 +1,26 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Traveless.Models
+{
+    public class Flight
+    {
+        public string Code { get; set; } = null!;
+
+        public string Airline { get; set; } = null!;
+
+        public string Origin { get; set; } = null!;
+        public string Destination { get; set; } = null!;
+        public string Day { get; set; } = null!;
+        public string Time { get; set; } = null!;
+        public double Cost { get; set; }
+        public int Seats { get; set; }
+
+        public override string ToString() =>
+            $"{Code} - {Airline} - {Origin} to {Destination} on {Day} at {Time} - ${Cost}";
+    }
+}
+
