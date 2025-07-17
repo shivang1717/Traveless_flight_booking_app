@@ -1,0 +1,80 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
+using Traveless.Models;
+
+namespace Traveless.Managers
+{
+    public static class ReservationManager
+    {
+        private static List<Reservation> reservations = new();
+        private static string filePath = Path.Combine(FileSystem.AppDataDirectory, "ReservationData.bin");
+
+        public static List<Reservation> Reservations => reservations;
+
+        public static string GenerateReservationCode()
+        {
+            var rand = new Random();
+            return $"{(char)('A' + rand.Next(0, 26))}{rand.Next(1000, 9999)}";
+        }
+
+        public static Reservation MakeReservation(Flight flight, string name, string citizenship)
+        {
+            if (flight == null) throw new Exception("Flight is not selected.");
+            if (string.IsNullOrWhiteSpace(name)) throw new Exception("Name is required.");
+            if (string.IsNullOrWhiteSpace(citizenship)) throw new Exception("Citizenship is required.");
+            if (flight.Seats <= 0) throw new Exception("No seats available.");
+
+            var reservation = new Reservation
+            {
+                Code = GenerateReservationCode(),
+                FlightCode = flight.Code,
+                Airline = flight.Airline,
+                Cost = flight.Cost,
+                Name = name,
+                Citizenship = citizenship,
+                IsActive = true
+            };
+            reservations.Add(reservation);
+            Save();
+            return reservation;
+        }
+
+        public static List<Reservation> FindReservations(string code, string airline, string name)
+        {
+            List<Reservation> result = new();
+            foreach (var r in reservations)
+            {
+                if ((!string.IsNullOrWhiteSpace(code) && r.Code.Contains(code)) ||
+                    (!string.IsNullOrWhiteSpace(airline) && r.Airline.Contains(airline)) ||
+                    (!string.IsNullOrWhiteSpace(name) && r.Name.Contains(name)))
+                {
+                    result.Add(r);
+                }
+            }
+            return result;
+        }
+
+        public static void Load()
+        {
+            if (File.Exists(filePath))
+            {
+                string json = File.ReadAllText(filePath);
+                reservations = JsonSerializer.Deserialize<List<Reservation>>(json) ?? new List<Reservation>();
+            }
+        }
+
+
+        public static void Save()
+        {
+            string json = JsonSerializer.Serialize(reservations);
+            File.WriteAllText(filePath, json);
+        }
+
+    }
+}
