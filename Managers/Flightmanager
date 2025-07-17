@@ -1,0 +1,37 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.IO;
+using Traveless.Models;
+
+namespace Traveless.Managers
+{
+    public static class FlightManager
+    {
+        public static List<Flight> LoadFlights(string path)
+        {
+            var flights = new List<Flight>();
+            foreach (var line in File.ReadAllLines(path))
+            {
+                var parts = line.Split(',');
+                if (parts.Length >= 7)
+                {
+                    flights.Add(new Flight
+                    {
+                        Code = parts[0],
+                        Airline = parts[1],
+                        Origin = parts[2],
+                        Destination = parts[3],
+                        Day = parts[4],
+                        Time = parts[5],
+                        Cost = double.Parse(parts[6]),
+                        Seats = 20  // You can set this dynamically if provided
+                    });
+                }
+            }
+            return flights;
+        }
+    }
+}
