@@ -1,0 +1,32 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using System;
+
+namespace Traveless.Models
+{
+    [Serializable]
+    public class Reservation
+    {
+        public string Code { get; set; } = null!;
+        public string FlightCode { get; set; } = null!;
+        public string Airline { get; set; } = null!;
+        public double Cost { get; set; }
+        public string Name { get; set; } = null!;
+        public string Citizenship { get; set; } = null!;
+        public bool IsActive { get; set; } = true;
+
+        public void Update(string name, string citizenship, bool isActive)
+        {
+            Name = name;
+            Citizenship = citizenship;
+            IsActive = isActive;
+        }
+
+        public override string ToString() => $"{Code} - {Name} - {Airline}";
+    }
+}
+
