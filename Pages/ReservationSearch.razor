@@ -1,0 +1,51 @@
+@page "/"
+@using Traveless.Models
+@using Traveless.Managers
+@inject NavigationManager Nav
+
+<h1>Flight Search</h1>
+
+<select @bind="origin">
+    <option value="">Select Origin</option>
+    @foreach (var a in Airports)
+    {
+        <option value="@a.Code">@a.Code - @a.Name</option>
+    }
+</select>
+
+<select @bind="destination">
+    <option value="">Select Destination</option>
+    @foreach (var a in Airports)
+    {
+        <option value="@a.Code">@a.Code - @a.Name</option>
+    }
+</select>
+
+<select @bind="day">
+    <option value="">Select Day</option>
+    @foreach (var d in Days)
+    {
+        <option value="@d">@d</option>
+    }
+</select>
+
+<button @onclick="FindFlights">Search Flights</button>
+
+@if (Flights?.Count > 0)
+{
+    <ul>
+        @foreach (var f in Flights)
+        {
+            <li>
+                <input type="radio" name="flightSelect" @onchange="() => SelectFlight(f)" />
+                @f.ToString()
+            </li>
+        }
+    </ul>
+}
+@code {
+    List<Airport> Airports = new();
+    List<Flight> Flights = new();
+    string[] Days = new[] { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
+    ...
+}
